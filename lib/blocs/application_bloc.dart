@@ -1,8 +1,10 @@
+import 'package:charge_up/domain/user.dart';
 import 'package:charge_up/models/charging_station.dart';
 import 'package:charge_up/models/place_search.dart';
 import 'package:charge_up/services/charging_stations_service.dart';
 import 'package:charge_up/services/geolocator_service.dart';
 import 'package:charge_up/services/places_service.dart';
+import 'package:charge_up/util/shared_preference.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -15,10 +17,17 @@ class ApplicationBloc with ChangeNotifier {
   late Position currentLocation;
   List<PlaceSearch> searchResults = [];
   List<ChargingStation> chargingStations = [];
+  late User user;
 
   ApplicationBloc() {
+    getCurrentUser();
     setCurrentLocation();
     setChargingStations();
+  }
+
+  getCurrentUser() async {
+    user = await UserPreferences().getUser();
+    notifyListeners();
   }
 
   ChargingStation findChargingStation(

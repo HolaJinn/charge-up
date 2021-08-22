@@ -2,8 +2,10 @@ import 'dart:collection';
 import 'package:charge_up/blocs/application_bloc.dart';
 import 'package:charge_up/constants.dart';
 import 'package:charge_up/models/charging_station.dart';
+import 'package:charge_up/providers/auth_provider.dart';
 import 'package:charge_up/screens/filter/filter.dart';
 import 'package:charge_up/screens/stations/station_info.dart';
+import 'package:charge_up/services/charging_stations_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -54,6 +56,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     var chargingStations = applicationBloc.chargingStations;
+    final user = applicationBloc.user;
 
     //The first value in the markers list is the current position marker
     //That position should be replaced with currentPosition variable from the applicationBloc
@@ -89,6 +92,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   MaterialPageRoute(
                       builder: (context) => StationInfo(
                             chargingStation: chargingStation,
+                            user: user,
                           )));
             });
         markers.add(marker);

@@ -38,18 +38,16 @@ class _ContributeScreenState extends State<ContributeScreen> {
                 .then((chargingStation) {
               final applicationBloc =
                   Provider.of<ApplicationBloc>(context, listen: false);
+              final currentUser = applicationBloc.user;
               chargingStationsService
-                  .addStation(1, chargingStation)
+                  .addStation(
+                      currentUser.userId, currentUser.token, chargingStation)
                   .then((httpResponse) {
                 if (httpResponse.statusCode == 201) {
                   applicationBloc.setChargingStations();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('You have successfully added a new station'),
-                  ));
+                  toastSuccessMsg('You have successfully added a new station');
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content:
-                          Text('There was an error creating the station')));
+                  toastErrorMsg('There was an error creating the station');
                 }
               });
             });
@@ -266,5 +264,37 @@ class _ContributeScreenState extends State<ContributeScreen> {
         ],
       ),
     );
+  }
+
+  void toastErrorMsg(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red.shade300,
+      content: Row(
+        children: <Widget>[
+          Icon(
+            Icons.error_outline_outlined,
+            color: Colors.white,
+          ),
+          Text(msg),
+        ],
+      ),
+      duration: Duration(seconds: 5),
+    ));
+  }
+
+  void toastSuccessMsg(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.greenAccent.shade700,
+      content: Row(
+        children: <Widget>[
+          Icon(
+            Icons.check_circle,
+            color: Colors.white,
+          ),
+          Text(msg, style: TextStyle(color: Colors.white)),
+        ],
+      ),
+      duration: Duration(seconds: 5),
+    ));
   }
 }
